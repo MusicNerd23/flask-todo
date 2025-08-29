@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topcard">
+  <form method="post" action="{{ url_for('add') }}">
+    <label>Title</label>
+    <input type="text" name="title" required>
+
+    <label>Due (YYYY-MM-DD)</label>
+    <input type="text" name="due" placeholder="">
+
+    <label>Notes</label>
+    <input type="text" name="notes" placeholder="">
+
+    <button type="submit">Add Task</button>
+  </form>
+</div>
+
+{% if tasks|length == 0 %}
+  <p>No tasks yet.</p>
+{% else %}
+  <div>
+    {% for task in tasks %}
+      <div class="task">
+        <form class="inline" method="post" action="{{ url_for('toggle', task_id=task['id']) }}">
+          <button type="submit">{{ '☑' if task['done'] else '☐' }}</button>
+        </form>
+        <span class="title {% if task['done'] %}done{% endif %}">
+          {{ task['title'] }}{% if task['due'] %} (due: {{ task['due'] }}){% endif %}
+        </span>
+        <div class="actions">
+          <a class="button" href="{{ url_for('edit', task_id=task['id']) }}">Edit</a>
+          <form class="inline" method="post" action="{{ url_for('delete', task_id=task['id']) }}" onsubmit="return confirm('Delete this task?')">
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
