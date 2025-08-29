@@ -39,12 +39,10 @@ def init_db():
             );
         """)
 
-@app.before_first_request
-def startup():
-    """
-    Called once on the first request. Ensures the DB exists.
-    """
+# Initialize the DB once at startup (Flask 3.x-compatible)
+with app.app_context():
     init_db()
+
 
 @app.get("/")
 def index():
