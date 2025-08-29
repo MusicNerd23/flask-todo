@@ -1,40 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="topcard">
-  <form method="post" action="{{ url_for('add') }}">
-    <label>Title</label>
-    <input type="text" name="title" required>
-
-    <label>Due (YYYY-MM-DD)</label>
-    <input type="text" name="due" placeholder="">
-
-    <label>Notes</label>
-    <input type="text" name="notes" placeholder="">
-
-    <button type="submit">Add Task</button>
-  </form>
-</div>
-
-{% if tasks|length == 0 %}
-  <p>No tasks yet.</p>
-{% else %}
-  <div>
-    {% for task in tasks %}
-      <div class="task">
-        <form class="inline" method="post" action="{{ url_for('toggle', task_id=task['id']) }}">
-          <button type="submit">{{ '☑' if task['done'] else '☐' }}</button>
-        </form>
-        <span class="title {% if task['done'] %}done{% endif %}">
-          {{ task['title'] }}{% if task['due'] %} (due: {{ task['due'] }}){% endif %}
-        </span>
-        <div class="actions">
-          <a class="button" href="{{ url_for('edit', task_id=task['id']) }}">Edit</a>
-          <form class="inline" method="post" action="{{ url_for('delete', task_id=task['id']) }}" onsubmit="return confirm('Delete this task?')">
-            <button type="submit">Delete</button>
-          </form>
-        </div>
+  <div class="card pad" style="margin-bottom:16px;">
+    <form method="post" action="{{ url_for('add') }}" class="grid cols-2">
+      <div>
+        <label>Title</label>
+        <input type="text" name="title" required placeholder="What needs doing?">
       </div>
-    {% endfor %}
+      <div>
+        <label>Due (YYYY-MM-DD)</label>
+        <input type="text" name="due" placeholder="">
+      </div>
+      <div style="grid-column:1 / -1">
+        <label>Notes</label>
+        <input type="text" name="notes" placeholder="Optional context">
+      </div>
+      <div class="toolbar" style="grid-column:1 / -1">
+        <button class="btn primary" type="submit">➕ Add Task</button>
+      </div>
+    </form>
   </div>
-{% endif %}
+
+  {% if tasks|length == 0 %}
+    <div class="card pad"><p style="margin:0;color:var(--muted)">No tasks yet. Add your first one above.</p></div>
+  {% else %}
+    <div class="card">
+      {% for task in tasks %}
+        <div class="task">
+          <form method="post" action="{{ url_for('toggle', task_id=task['id']) }}">
+            <button class="check" title="Toggle done" type="submit">{{ '☑' if task['done'] else '☐' }}</button>
+          </form>
+          <div class="title {% if task['done'] %}done{% endif %}">{{ task['title'] }}
+            {% if task['due'] %}<span class="pill">due {{ task['due'] }}</span>{% endif %}
+          </div>
+          <div class="toolbar" style="margin-left:auto">
+            <a class="btn ghost" href="{{ url_for('edit', task_id=task['id']) }}">✏️ Edit</a>
+            <form method="post" action="{{ url_for('delete', task_id=task['id']) }}" onsubmit="return confirm('Delete this task?')">
+              <button class="btn ghost" type="submit">🗑 Delete</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 {% endblock %}

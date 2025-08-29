@@ -1,16 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<form method="post">
-  <label>Title</label>
-  <input type="text" name="title" value="{{ task['title'] }}" required>
-
-  <label>Due (YYYY-MM-DD)</label>
-  <input type="text" name="due" value="{{ task['due'] or '' }}">
-
-  <label>Notes</label>
-  <input type="text" name="notes" value="{{ task['notes'] or '' }}">
-
-  <button type="submit">Save</button>
-  <a class="button" href="{{ url_for('index') }}">Cancel</a>
-</form>
+  <div class="card pad">
+    <form method="post" class="grid cols-2">
+      <div style="grid-column:1 / -1">
+        <label>Title</label>
+        <input type="text" name="title" value="{{ task['title'] }}" required>
+      </div>
+      <div>
+        <label>Due (YYYY-MM-DD)</label>
+        <input type="text" name="due" value="{{ task['due'] or '' }}">
+      </div>
+      <div>
+        <label>Notes</label>
+        <input type="text" name="notes" value="{{ task['notes'] or '' }}">
+      </div>
+      <div class="toolbar" style="grid-column:1 / -1">
+        <button class="btn primary" type="submit">💾 Save</button>
+        <a class="btn ghost" href="{{ url_for('index') }}">Cancel</a>
+      </div>
+    </form>
+  </div>
 {% endblock %}
