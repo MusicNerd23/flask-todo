@@ -55,6 +55,18 @@ def index():
         tasks = conn.execute(
             "SELECT id, title, done, due, notes, created_at FROM tasks ORDER BY done, id"
         ).fetchall()
+    # Reformat due dates to MM-DD-YYYY for display
+    formatted_tasks = []
+    for t in tasks:
+        t = dict(t)
+        if t.get("due"):
+            try:
+                dt = datetime.strptime(t["due"], "%Y-%m-%d")
+                t["due"] = dt.strftime("%m-%d-%Y")
+            except ValueError:
+                pass
+        formatted_tasks.append(t)
+    tasks = formatted_tasks
     return render_template("index.html", tasks=tasks)
 
 @app.post("/add")
